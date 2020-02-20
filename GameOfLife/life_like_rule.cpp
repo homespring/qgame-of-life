@@ -1,14 +1,16 @@
 #include "life_like_rule.h"
 #include <cctype>
 
-LifeLikeRule::LifeLikeRule(RuleName name)
+using namespace LifeLike;
+
+Rule::Rule(RuleName name)
     : name_(name)
 {
     birth_rule_ = birth_rule(name_);
     survival_rule_ = survival_rule(name_);
 }
 
-LifeLikeRule::LifeLikeRule(const std::string &rule_str)
+Rule::Rule(const std::string &rule_str)
 {
     if(parse_rle_rule_string(rule_str))
     {
@@ -26,7 +28,7 @@ LifeLikeRule::LifeLikeRule(const std::string &rule_str)
     }
 }
 
-std::string LifeLikeRule::name_string(LifeLikeRule::RuleName name)
+std::string Rule::name_string(Rule::RuleName name)
 {
     switch(name)
     {
@@ -59,12 +61,12 @@ std::string LifeLikeRule::name_string(LifeLikeRule::RuleName name)
     }
 }
 
-std::string LifeLikeRule::name_string() const
+std::string Rule::name_string() const
 {
     return name_string(name_);
 }
 
-uint16_t LifeLikeRule::birth_rule(LifeLikeRule::RuleName name)
+uint16_t Rule::birth_rule(Rule::RuleName name)
 {
     switch(name)
     {
@@ -95,17 +97,17 @@ uint16_t LifeLikeRule::birth_rule(LifeLikeRule::RuleName name)
     }
 }
 
-std::string LifeLikeRule::birth_rule_string(LifeLikeRule::RuleName name)
+std::string Rule::birth_rule_string(Rule::RuleName name)
 {
     return flags_to_string_internal(birth_rule(name));
 }
 
-std::string LifeLikeRule::birth_rule_string() const
+std::string Rule::birth_rule_string() const
 {
     return flags_to_string_internal(birth_rule_);
 }
 
-uint16_t LifeLikeRule::survival_rule(LifeLikeRule::RuleName name)
+uint16_t Rule::survival_rule(Rule::RuleName name)
 {
     switch(name)
     {
@@ -136,37 +138,37 @@ uint16_t LifeLikeRule::survival_rule(LifeLikeRule::RuleName name)
 
 }
 
-std::string LifeLikeRule::survival_rule_string(LifeLikeRule::RuleName name)
+std::string Rule::survival_rule_string(Rule::RuleName name)
 {
     return flags_to_string_internal(survival_rule(name));
 }
 
-std::string LifeLikeRule::survival_rule_string() const
+std::string Rule::survival_rule_string() const
 {
     return flags_to_string_internal(survival_rule_);
 }
 
-std::string LifeLikeRule::to_mcell_notation(LifeLikeRule::RuleName name)
+std::string Rule::to_mcell_notation(Rule::RuleName name)
 {
     return to_mcell_notation_internal(birth_rule_string(name), survival_rule_string(name));
 }
 
-std::string LifeLikeRule::to_mcell_notation() const
+std::string Rule::to_mcell_notation() const
 {
     return to_mcell_notation_internal(birth_rule_string(), survival_rule_string());
 }
 
-std::string LifeLikeRule::to_rle_notation(LifeLikeRule::RuleName name)
+std::string Rule::to_rle_notation(Rule::RuleName name)
 {
     return to_rle_notation_internal(birth_rule_string(name), survival_rule_string(name));
 }
 
-std::string LifeLikeRule::to_rle_notation() const
+std::string Rule::to_rle_notation() const
 {
     return to_rle_notation_internal(birth_rule_string(), survival_rule_string());
 }
 
-std::string LifeLikeRule::flags_to_string_internal(uint16_t flags)
+std::string Rule::flags_to_string_internal(uint16_t flags)
 {
     std::string ret;
 
@@ -179,17 +181,17 @@ std::string LifeLikeRule::flags_to_string_internal(uint16_t flags)
     return ret;
 }
 
-std::string LifeLikeRule::to_mcell_notation_internal(const std::string &birth_rule_str, const std::string &survival_rule_str)
+std::string Rule::to_mcell_notation_internal(const std::string &birth_rule_str, const std::string &survival_rule_str)
 {
     return survival_rule_str + "/" + birth_rule_str;
 }
 
-std::string LifeLikeRule::to_rle_notation_internal(const std::string &birth_rule_str, const std::string &survival_rule_str)
+std::string Rule::to_rle_notation_internal(const std::string &birth_rule_str, const std::string &survival_rule_str)
 {
     return "B" + birth_rule_str + "/S" + survival_rule_str;
 }
 
-bool LifeLikeRule::parse_rle_rule_string(const std::string &rule_str)
+bool Rule::parse_rle_rule_string(const std::string &rule_str)
 {
     // RLE format: Bx/Sy, where x,y == (0, 1, 2, ... 8)
     // x - birth rule, y - survival rule
@@ -248,7 +250,7 @@ bool LifeLikeRule::parse_rle_rule_string(const std::string &rule_str)
     return true;
 }
 
-bool LifeLikeRule::parse_mcell_rule_string(const std::string &rule_str)
+bool Rule::parse_mcell_rule_string(const std::string &rule_str)
 {
     // Mirek's Cellebration format: x/y, where x,y == (0, 1, 2, ... 8)
     // x - survival rule, y - birth rule
@@ -297,7 +299,7 @@ bool LifeLikeRule::parse_mcell_rule_string(const std::string &rule_str)
     return true;
 }
 
-LifeLikeRule::Neighborhood LifeLikeRule::digit_char_to_neighborhood(char digit) const
+Rule::Neighborhood Rule::digit_char_to_neighborhood(char digit) const
 {
     switch(digit)
     {
