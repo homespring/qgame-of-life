@@ -20,11 +20,13 @@ public:
         DAY_AND_NIGHT,
         MORLEY,
         ANNEAL,
-        CUSTOM
+        CUSTOM,
+        INVALID_RULE
     };
 
     enum Neighborhood
     {
+        UNKNOWN_CELL_NUMBER = 0,
         WITH_0_CELLS = 1,
         WITH_1_CELL  = 2,
         WITH_2_CELLS = 4,
@@ -38,7 +40,7 @@ public:
     };
 
     LifeLikeRule(RuleName name = LIFE);
-    LifeLikeRule(const std::string& rle_notation_rule);
+    LifeLikeRule(const std::string& rule_str);
 
     RuleName name() const { return name_; }
     static std::string name_string(RuleName name);
@@ -72,6 +74,10 @@ private:
                                                   const std::string &survival_rule_str);
     static std::string to_rle_notation_internal(const std::string& birth_rule_str,
                                                   const std::string &survival_rule_str);
+
+    bool parse_rle_rule_string(const std::string& rule_str);
+    bool parse_mcell_rule_string(const std::string& rule_str);
+    Neighborhood digit_char_to_neighborhood(char digit) const;
 };
 
 #endif // LIFE_LIKE_RULE_H

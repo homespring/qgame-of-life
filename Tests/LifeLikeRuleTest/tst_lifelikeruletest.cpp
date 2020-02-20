@@ -30,6 +30,13 @@ private slots:
     void knows_morley_rule();
     void knows_anneal_rule();
     void can_be_constructed_from_rle_notation_string();
+    void can_be_constructed_from_mcell_notation_string();
+    void is_invalid_when_rle_dont_have_B_char_at_front();
+    void is_invalid_when_rle_dont_have_slash_char();
+    void is_invalid_when_rle_dont_have_S_char_after_slash();
+    void in_invalid_when_rle_has_other_chars();
+    void is_invalid_when_mcell_dont_have_slash_char();
+    void is_invalid_when_mcell_has_other_chars();
 };
 
 LifeLikeRuleTest::LifeLikeRuleTest() {}
@@ -211,6 +218,87 @@ void LifeLikeRuleTest::can_be_constructed_from_rle_notation_string()
 
     QCOMPARE(r.name(), LifeLikeRule::CUSTOM);
     QCOMPARE(r.to_rle_notation(), expected_rule_string);
+    QCOMPARE(r.name_string(), expected_name);
+    QCOMPARE(r.birth_rule(), LifeLikeRule::WITH_1_CELL | LifeLikeRule::WITH_2_CELLS | LifeLikeRule::WITH_3_CELLS);
+    QCOMPARE(r.survival_rule(), LifeLikeRule::WITH_4_CELLS | LifeLikeRule::WITH_5_CELLS | LifeLikeRule::WITH_6_CELLS);
+}
+
+void LifeLikeRuleTest::can_be_constructed_from_mcell_notation_string()
+{
+    const std::string expected_rule_string("123/456");
+    const std::string expected_name("custom");
+    LifeLikeRule r(expected_rule_string);
+
+    QCOMPARE(r.name(), LifeLikeRule::CUSTOM);
+    QCOMPARE(r.to_mcell_notation(), expected_rule_string);
+    QCOMPARE(r.name_string(), expected_name);
+    QCOMPARE(r.birth_rule(), LifeLikeRule::WITH_4_CELLS | LifeLikeRule::WITH_5_CELLS | LifeLikeRule::WITH_6_CELLS);
+    QCOMPARE(r.survival_rule(), LifeLikeRule::WITH_1_CELL | LifeLikeRule::WITH_2_CELLS | LifeLikeRule::WITH_3_CELLS);
+}
+
+void LifeLikeRuleTest::is_invalid_when_rle_dont_have_B_char_at_front()
+{
+    const std::string expected_rule_string("B/S");
+    const std::string expected_name("invalid");
+    LifeLikeRule r("123/S456");
+
+    QCOMPARE(r.name(), LifeLikeRule::INVALID_RULE);
+    QCOMPARE(r.to_rle_notation(), expected_rule_string);
+    QCOMPARE(r.name_string(), expected_name);
+}
+
+void LifeLikeRuleTest::is_invalid_when_rle_dont_have_slash_char()
+{
+    const std::string expected_rule_string("B/S");
+    const std::string expected_name("invalid");
+    LifeLikeRule r("B123S456");
+
+    QCOMPARE(r.name(), LifeLikeRule::INVALID_RULE);
+    QCOMPARE(r.to_rle_notation(), expected_rule_string);
+    QCOMPARE(r.name_string(), expected_name);
+}
+
+void LifeLikeRuleTest::is_invalid_when_rle_dont_have_S_char_after_slash()
+{
+    const std::string expected_rule_string("B/S");
+    const std::string expected_name("invalid");
+    LifeLikeRule r("B123/456");
+
+    QCOMPARE(r.name(), LifeLikeRule::INVALID_RULE);
+    QCOMPARE(r.to_rle_notation(), expected_rule_string);
+    QCOMPARE(r.name_string(), expected_name);
+}
+
+void LifeLikeRuleTest::in_invalid_when_rle_has_other_chars()
+{
+    const std::string expected_rule_string("B/S");
+    const std::string expected_name("invalid");
+    LifeLikeRule r("B123/G456");
+
+    QCOMPARE(r.name(), LifeLikeRule::INVALID_RULE);
+    QCOMPARE(r.to_rle_notation(), expected_rule_string);
+    QCOMPARE(r.name_string(), expected_name);
+}
+
+void LifeLikeRuleTest::is_invalid_when_mcell_dont_have_slash_char()
+{
+    const std::string expected_rule_string("/");
+    const std::string expected_name("invalid");
+    LifeLikeRule r("123456");
+
+    QCOMPARE(r.name(), LifeLikeRule::INVALID_RULE);
+    QCOMPARE(r.to_mcell_notation(), expected_rule_string);
+    QCOMPARE(r.name_string(), expected_name);
+}
+
+void LifeLikeRuleTest::is_invalid_when_mcell_has_other_chars()
+{
+    const std::string expected_rule_string("/");
+    const std::string expected_name("invalid");
+    LifeLikeRule r("123k456");
+
+    QCOMPARE(r.name(), LifeLikeRule::INVALID_RULE);
+    QCOMPARE(r.to_mcell_notation(), expected_rule_string);
     QCOMPARE(r.name_string(), expected_name);
 }
 

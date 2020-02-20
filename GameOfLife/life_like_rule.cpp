@@ -1,4 +1,5 @@
 #include "life_like_rule.h"
+#include <cctype>
 
 LifeLikeRule::LifeLikeRule(RuleName name)
     : name_(name)
@@ -7,9 +8,22 @@ LifeLikeRule::LifeLikeRule(RuleName name)
     survival_rule_ = survival_rule(name_);
 }
 
-LifeLikeRule::LifeLikeRule(const std::string &rle_notation_rule)
+LifeLikeRule::LifeLikeRule(const std::string &rule_str)
 {
-    (void)rle_notation_rule;
+    if(parse_rle_rule_string(rule_str))
+    {
+        name_ = CUSTOM;
+    }
+    else if(parse_mcell_rule_string(rule_str))
+    {
+        name_ = CUSTOM;
+    }
+    else
+    {
+        name_ = INVALID_RULE;
+        birth_rule_ = 0;
+        survival_rule_ = 0;
+    }
 }
 
 std::string LifeLikeRule::name_string(LifeLikeRule::RuleName name)
@@ -40,9 +54,9 @@ std::string LifeLikeRule::name_string(LifeLikeRule::RuleName name)
         return "Anneal";
     case CUSTOM:
         return "custom";
+    default:
+        return "invalid";
     }
-
-    return "";
 }
 
 std::string LifeLikeRule::name_string() const
@@ -173,4 +187,129 @@ std::string LifeLikeRule::to_mcell_notation_internal(const std::string &birth_ru
 std::string LifeLikeRule::to_rle_notation_internal(const std::string &birth_rule_str, const std::string &survival_rule_str)
 {
     return "B" + birth_rule_str + "/S" + survival_rule_str;
+}
+
+bool LifeLikeRule::parse_rle_rule_string(const std::string &rule_str)
+{
+    // RLE format: Bx/Sy, where x,y == (0, 1, 2, ... 8)
+    // x - birth rule, y - survival rule
+    // minimal example: B/S
+    // maximal example: B012345678/S012345678
+
+    if(rule_str.size() < 3)
+        return false;
+
+    if(rule_str.front() != 'B')
+        return false;
+
+    size_t off;
+    bool birth_rule_parsing = true;
+
+    birth_rule_ = 0;
+    survival_rule_ = 0;
+
+    for(off = 1; off < rule_str.size(); ++off)
+    {
+        if(birth_rule_parsing)
+        {
+            if(isdigit(rule_str.at(off)))
+            {
+                birth_rule_ |= digit_char_to_neighborhood(rule_str.at(off));
+            }
+            else
+            {
+                if(rule_str.at(off) == '/')
+                {
+                    if(off + 1 < rule_str.size())
+                    {
+                        if(rule_str.at(++off) == 'S')
+                            birth_rule_parsing = false;
+                        else
+                            return false; // parsing error
+                    }
+                }
+                else
+                    return false;
+            }
+        }
+        else
+        {
+            // survival rule parsing
+
+            if(isdigit(rule_str.at(off)))
+            {
+                survival_rule_ |= digit_char_to_neighborhood(rule_str.at(off));
+            }
+            else
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool LifeLikeRule::parse_mcell_rule_string(const std::string &rule_str)
+{
+    // Mirek's Cellebration format: x/y, where x,y == (0, 1, 2, ... 8)
+    // x - survival rule, y - birth rule
+    // minimal example: /
+    // maximal example: 012345678/012345678
+
+    if(rule_str.size() < 1)
+        return false;
+
+    if(rule_str.find('/') == std::string::npos)
+        return false;
+
+    bool survival_rule_parsing = true;
+
+    birth_rule_ = 0;
+    survival_rule_ = 0;
+
+    for(size_t off = 0; off < rule_str.size(); ++off)
+    {
+        if(survival_rule_parsing)
+        {
+            if(isdigit(rule_str.at(off)))
+            {
+                survival_rule_ |= digit_char_to_neighborhood(rule_str.at(off));
+            }
+            else if(rule_str.at(off) == '/')
+            {
+                survival_rule_parsing = false;
+            }
+            else
+                return false;
+        }
+        else
+        {
+            // birth rule parsing
+
+            if(isdigit(rule_str.at(off)))
+            {
+                birth_rule_ |= digit_char_to_neighborhood(rule_str.at(off));
+            }
+            else
+                return false;
+        }
+    }
+
+    return true;
+}
+
+LifeLikeRule::Neighborhood LifeLikeRule::digit_char_to_neighborhood(char digit) const
+{
+    switch(digit)
+    {
+    case '0': return WITH_0_CELLS;
+    case '1': return WITH_1_CELL;
+    case '2': return WITH_2_CELLS;
+    case '3': return WITH_3_CELLS;
+    case '4': return WITH_4_CELLS;
+    case '5': return WITH_5_CELLS;
+    case '6': return WITH_6_CELLS;
+    case '7': return WITH_7_CELLS;
+    case '8': return WITH_8_CELLS;
+    default: return UNKNOWN_CELL_NUMBER;
+    }
 }
