@@ -16,7 +16,7 @@ GameWindow::GameWindow(QWidget *parent) :
     init_connections();
     init_scene();
 
-    clear_generations_counter();
+    update_generation_counter();
 }
 
 GameWindow::~GameWindow()
@@ -40,7 +40,6 @@ void GameWindow::on_bt_sim_start_stop_clicked()
         // start the game
 
         ui->bt_sim_start_stop->setText("Stop");
-        clear_generations_counter();
 
         tim_game.start(ui->sb_time_step->value());
     }
@@ -56,6 +55,7 @@ void GameWindow::on_bt_sim_start_stop_clicked()
 
 void GameWindow::tick_game()
 {
+    game_.produce_next_generation();
     update_generation_counter();
 }
 
@@ -86,13 +86,7 @@ void GameWindow::init_scene()
     ui->biome_display->setScene(&biome_scene_);
 }
 
-void GameWindow::clear_generations_counter()
-{
-    generation_cnt_ = 1;
-    ui->status_bar->showMessage("Generation: " + QString::number(generation_cnt_));
-}
-
 void GameWindow::update_generation_counter()
 {
-    ui->status_bar->showMessage("Generation: " + QString::number(++generation_cnt_));
+    ui->status_bar->showMessage("Generation: " + QString::number(game_.generation_number()));
 }

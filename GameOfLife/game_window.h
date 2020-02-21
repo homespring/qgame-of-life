@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QGraphicsScene>
+#include "life_like_game.h"
 
 namespace Ui {
 class GameWindow;
@@ -30,14 +31,13 @@ private:
     Ui::GameWindow *ui;
     QGraphicsScene biome_scene_;
 
+    LifeLike::Game game_;
     QTimer tim_game;
-    quint64 generation_cnt_;
 
     void init_window();
     void init_connections();
     void init_scene();
 
-    void clear_generations_counter();
     void update_generation_counter();
 };
 

@@ -18,6 +18,7 @@ private slots:
     void has_life_rule_by_default();
     void can_be_constructed_with_size_and_rule();
     void can_set_rule();
+    void counts_generations();
 };
 
 LifeLikeGameTest::LifeLikeGameTest() {}
@@ -64,6 +65,17 @@ void LifeLikeGameTest::can_set_rule()
     g.set_rule(Rule(Rule::ANNEAL));
 
     QCOMPARE(g.rule().name(), Rule::ANNEAL);
+}
+
+void LifeLikeGameTest::counts_generations()
+{
+    Game g;
+
+    QCOMPARE(g.generation_number(), uint64_t(1));
+
+    g.produce_next_generation();
+
+    QCOMPARE(g.generation_number(), uint64_t(2));
 }
 
 QTEST_APPLESS_MAIN(LifeLikeGameTest)

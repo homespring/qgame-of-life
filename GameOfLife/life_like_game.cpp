@@ -9,3 +9,8 @@ Game::Game(int width, int height)
 
 Game::Game(int width, int height, const Rule &rule)
     : width_(width), height_(height), rule_(rule) {}
+
+void Game::produce_next_generation()
+{
+    ++generation_number_;
+}

@@ -18,11 +18,16 @@ namespace LifeLike
         const Rule& rule() const { return rule_; }
         void set_rule(const Rule& rule) { rule_ = rule; }
 
+        uint64_t generation_number() const { return generation_number_; }
+        void produce_next_generation();
+
     private:
         int width_ = 0;
         int height_ = 0;
 
         Rule rule_;
+
+        uint64_t generation_number_ = 1;
     };
 }
 
