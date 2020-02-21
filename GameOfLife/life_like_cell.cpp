@@ -5,7 +5,7 @@ using namespace LifeLike;
 Cell::Cell(bool alive, Qt::GlobalColor alive_color)
     : alive_(alive), alive_color_(alive_color) {}
 
-void Cell::born(Qt::GlobalColor color)
+void Cell::be_born(Qt::GlobalColor color)
 {
     alive_ = true;
     alive_color_ = color;

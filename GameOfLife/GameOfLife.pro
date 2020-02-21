@@ -8,7 +8,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        life_like_biome.cpp \
         life_like_cell.cpp \
+        life_like_color_rule.cpp \
         life_like_game.cpp \
         life_like_rule.cpp \
         main.cpp \
@@ -16,7 +18,9 @@ SOURCES += \
 
 HEADERS += \
         game_window.h \
+        life_like_biome.h \
         life_like_cell.h \
+        life_like_color_rule.h \
         life_like_game.h \
         life_like_rule.h \
         version.h

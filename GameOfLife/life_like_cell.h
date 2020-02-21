@@ -1,7 +1,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <QColor>
+#include <qnamespace.h>
 #include "life_like_rule.h"
 
 namespace LifeLike
@@ -14,8 +14,8 @@ namespace LifeLike
         bool is_alive() const { return alive_; }
 
         void kill() { alive_ = false; }
-        void born() { alive_ = true; }
-        void born(Qt::GlobalColor color);
+        void be_born() { alive_ = true; }
+        void be_born(Qt::GlobalColor color);
 
         Qt::GlobalColor color() const { return alive_ ? alive_color_ : Qt::transparent; }
 

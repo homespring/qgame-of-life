@@ -81,7 +81,7 @@ void CellTest::can_be_born()
 {
     Cell c(false);
     QVERIFY(!c.is_alive());
-    c.born();
+    c.be_born();
     QVERIFY(c.is_alive());
 }
 
@@ -89,7 +89,7 @@ void CellTest::can_be_born_with_color()
 {
     Cell c(false);
     QCOMPARE(c.color(), Qt::transparent);
-    c.born(Qt::green);
+    c.be_born(Qt::green);
     QVERIFY(c.is_alive());
     QCOMPARE(c.color(), Qt::green);
 }
