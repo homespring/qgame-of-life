@@ -8,14 +8,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        cell.cpp \
+        life_like_cell.cpp \
+        life_like_game.cpp \
         life_like_rule.cpp \
         main.cpp \
         game_window.cpp
 
 HEADERS += \
-        cell.h \
         game_window.h \
+        life_like_cell.h \
+        life_like_game.h \
         life_like_rule.h \
         version.h
 

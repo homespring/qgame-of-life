@@ -39,6 +39,7 @@ private slots:
     void in_invalid_when_rle_has_other_chars();
     void is_invalid_when_mcell_dont_have_slash_char();
     void is_invalid_when_mcell_has_other_chars();
+    void converts_neighbors_count_to_neighbors_enum();
 };
 
 LifeLikeRuleTest::LifeLikeRuleTest() {}
@@ -302,6 +303,20 @@ void LifeLikeRuleTest::is_invalid_when_mcell_has_other_chars()
     QCOMPARE(r.name(), Rule::INVALID_RULE);
     QCOMPARE(r.to_mcell_notation(), expected_rule_string);
     QCOMPARE(r.name_string(), expected_name);
+}
+
+void LifeLikeRuleTest::converts_neighbors_count_to_neighbors_enum()
+{
+    QCOMPARE(Rule::neighbor_count_to_enum(0), Rule::WITH_0_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(1), Rule::WITH_1_CELL);
+    QCOMPARE(Rule::neighbor_count_to_enum(2), Rule::WITH_2_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(3), Rule::WITH_3_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(4), Rule::WITH_4_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(5), Rule::WITH_5_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(6), Rule::WITH_6_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(7), Rule::WITH_7_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(8), Rule::WITH_8_CELLS);
+    QCOMPARE(Rule::neighbor_count_to_enum(99), Rule::UNKNOWN_CELL_NUMBER);
 }
 
 QTEST_APPLESS_MAIN(LifeLikeRuleTest)

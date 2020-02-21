@@ -168,6 +168,23 @@ std::string Rule::to_rle_notation() const
     return to_rle_notation_internal(birth_rule_string(), survival_rule_string());
 }
 
+Rule::Neighborhood Rule::neighbor_count_to_enum(int neighbor_cnt)
+{
+    switch(neighbor_cnt)
+    {
+    case 0: return WITH_0_CELLS;
+    case 1: return WITH_1_CELL;
+    case 2: return WITH_2_CELLS;
+    case 3: return WITH_3_CELLS;
+    case 4: return WITH_4_CELLS;
+    case 5: return WITH_5_CELLS;
+    case 6: return WITH_6_CELLS;
+    case 7: return WITH_7_CELLS;
+    case 8: return WITH_8_CELLS;
+    default: return UNKNOWN_CELL_NUMBER;
+    }
+}
+
 std::string Rule::flags_to_string_internal(uint16_t flags)
 {
     std::string ret;

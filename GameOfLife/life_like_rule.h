@@ -66,6 +66,8 @@ namespace LifeLike
         static std::string to_rle_notation(RuleName name);
         std::string to_rle_notation() const;
 
+        static Neighborhood neighbor_count_to_enum(int neighbor_cnt);
+
     private:
         RuleName name_;
         uint16_t birth_rule_;
@@ -81,7 +83,6 @@ namespace LifeLike
         bool parse_mcell_rule_string(const std::string& rule_str);
         Neighborhood digit_char_to_neighborhood(char digit) const;
     };
-
 }
 
 #endif // LIFE_LIKE_RULE_H
