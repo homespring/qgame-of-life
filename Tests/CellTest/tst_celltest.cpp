@@ -15,8 +15,12 @@ private slots:
     void is_dead_by_default();
     void can_be_constructed_alive();
     void can_be_constructed_dead();
+    void can_be_constructed_with_alive_color();
     void has_white_color_when_alive();
     void has_transparent_color_when_dead();
+    void can_be_killed();
+    void can_be_born();
+    void can_be_born_with_color();
     void dead_cell_tells_if_should_be_born();
     void dead_cell_tells_if_shouldnt_be_born();
     void live_cell_tells_if_should_die_of_loneliness();
@@ -46,6 +50,13 @@ void CellTest::can_be_constructed_dead()
     QVERIFY(!c.is_alive());
 }
 
+void CellTest::can_be_constructed_with_alive_color()
+{
+    Cell c(true, Qt::red);
+    QVERIFY(c.is_alive());
+    QCOMPARE(c.color(), Qt::red);
+}
+
 void CellTest::has_white_color_when_alive()
 {
     Cell c(true);
@@ -56,6 +67,31 @@ void CellTest::has_transparent_color_when_dead()
 {
     Cell c(false);
     QCOMPARE(c.color(), Qt::transparent);
+}
+
+void CellTest::can_be_killed()
+{
+    Cell c(true);
+    QVERIFY(c.is_alive());
+    c.kill();
+    QVERIFY(!c.is_alive());
+}
+
+void CellTest::can_be_born()
+{
+    Cell c(false);
+    QVERIFY(!c.is_alive());
+    c.born();
+    QVERIFY(c.is_alive());
+}
+
+void CellTest::can_be_born_with_color()
+{
+    Cell c(false);
+    QCOMPARE(c.color(), Qt::transparent);
+    c.born(Qt::green);
+    QVERIFY(c.is_alive());
+    QCOMPARE(c.color(), Qt::green);
 }
 
 void CellTest::dead_cell_tells_if_should_be_born()

@@ -2,8 +2,14 @@
 
 using namespace LifeLike;
 
-Cell::Cell(bool alive)
-    : alive_(alive) {}
+Cell::Cell(bool alive, Qt::GlobalColor alive_color)
+    : alive_(alive), alive_color_(alive_color) {}
+
+void Cell::born(Qt::GlobalColor color)
+{
+    alive_ = true;
+    alive_color_ = color;
+}
 
 bool Cell::should_be_alive(const Rule &rule, int living_neighbors)
 {
