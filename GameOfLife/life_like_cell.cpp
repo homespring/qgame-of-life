@@ -11,7 +11,7 @@ void Cell::be_born(Qt::GlobalColor color)
     alive_color_ = color;
 }
 
-bool Cell::should_be_alive(const Rule &rule, int living_neighbors)
+bool Cell::should_be_alive(const Rule &rule, size_t living_neighbors) const
 {
     if(!alive_)
         return should_be_born(rule, living_neighbors);
@@ -19,12 +19,12 @@ bool Cell::should_be_alive(const Rule &rule, int living_neighbors)
         return should_survive(rule, living_neighbors);
 }
 
-bool Cell::should_be_born(const Rule &rule, int living_neighbors)
+bool Cell::should_be_born(const Rule &rule, size_t living_neighbors) const
 {
     return rule.birth_rule() & Rule::neighbor_count_to_enum(living_neighbors);
 }
 
-bool Cell::should_survive(const Rule &rule, int living_neighbors)
+bool Cell::should_survive(const Rule &rule, size_t living_neighbors) const
 {
     return rule.survival_rule() & Rule::neighbor_count_to_enum(living_neighbors);
 }

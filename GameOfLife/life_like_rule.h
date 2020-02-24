@@ -66,7 +66,7 @@ namespace LifeLike
         static std::string to_rle_notation(RuleName name);
         std::string to_rle_notation() const;
 
-        static Neighborhood neighbor_count_to_enum(int neighbor_cnt);
+        static Neighborhood neighbor_count_to_enum(size_t neighbor_cnt);
 
     private:
         RuleName name_;

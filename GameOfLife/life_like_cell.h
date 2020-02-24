@@ -19,14 +19,14 @@ namespace LifeLike
 
         Qt::GlobalColor color() const { return alive_ ? alive_color_ : Qt::transparent; }
 
-        bool should_be_alive(const Rule& rule, int living_neighbors);
+        bool should_be_alive(const Rule& rule, size_t living_neighbors) const;
 
     private:
         bool alive_;
         Qt::GlobalColor alive_color_;
 
-        bool should_be_born(const Rule& rule, int living_neighbors);
-        bool should_survive(const Rule& rule, int living_neighbors);
+        bool should_be_born(const Rule& rule, size_t living_neighbors) const;
+        bool should_survive(const Rule& rule, size_t living_neighbors) const;
     };
 }
 

@@ -168,7 +168,7 @@ std::string Rule::to_rle_notation() const
     return to_rle_notation_internal(birth_rule_string(), survival_rule_string());
 }
 
-Rule::Neighborhood Rule::neighbor_count_to_enum(int neighbor_cnt)
+Rule::Neighborhood Rule::neighbor_count_to_enum(size_t neighbor_cnt)
 {
     switch(neighbor_cnt)
     {
