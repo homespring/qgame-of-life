@@ -130,7 +130,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="cb_life_like_rules"/>
+        <widget class="QComboBox" name="cb_life_like_rules">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label">
@@ -140,7 +144,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="le_rule_notation"/>
+        <widget class="QLineEdit" name="le_rule_notation">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

@@ -18,6 +18,7 @@ GameWindow::GameWindow(QWidget *parent) :
     init_window();
     init_connections();
     init_scene();
+    init_rules_combobox();
 
     update_generation_counter();
 }
@@ -35,7 +36,7 @@ void GameWindow::on_bt_generate_biome_clicked()
 
     if(game_.width() != w || game_.height() != h)
     {
-        game_ = LifeLike::Game(w, h);
+        game_ = LifeLike::Game(w, h, selected_rule());
         game_.initialize_randomly(fill_factor);
 
         game_scene_.clear();
@@ -65,6 +66,7 @@ void GameWindow::on_bt_generate_biome_clicked()
         // rozmiar gry sie nie zmienil
 
         game_.initialize_randomly(fill_factor);
+        game_.set_rule(selected_rule());
         update_generation_counter();
         update_game_cells_colors();
     }
@@ -86,6 +88,8 @@ void GameWindow::on_bt_sim_start_stop_clicked()
             on_bt_generate_biome_clicked();
 
         ui->bt_sim_start_stop->setText("Stop");
+
+        game_.set_rule(selected_rule());
 
         tim_game.start(ui->sb_time_step->value());
     }
@@ -112,10 +116,20 @@ void GameWindow::tick_game()
     }
 }
 
-void GameWindow::conways_rules_toggled(bool checked)
+void GameWindow::game_rules_toggled(bool checked)
 {
-    if(!checked)
-        return;
+    if(checked)
+    {
+        // standard Conway's Game of Life
+
+        ui->cb_life_like_rules->setCurrentText("Life");
+        ui->cb_life_like_rules->setEnabled(false);
+        ui->le_rule_notation->setText(QString::fromStdString(LifeLike::Rule::to_rle_notation(LifeLike::Rule::LIFE)));
+    }
+    else
+    {
+        ui->cb_life_like_rules->setEnabled(true);
+    }
 }
 
 void GameWindow::init_window()
@@ -131,12 +145,26 @@ void GameWindow::init_window()
 void GameWindow::init_connections()
 {
     connect(&tim_game, &QTimer::timeout, this, &GameWindow::tick_game);
+    connect(ui->rb_rules_conway, &QAbstractButton::toggled, this, &GameWindow::game_rules_toggled);
+    connect(ui->cb_life_like_rules, SIGNAL(currentIndexChanged(QString)), this, SLOT(selected_rule_index_changed(QString)));
 }
 
 void GameWindow::init_scene()
 {
     game_scene_.setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     ui->game_view->setScene(&game_scene_);
+}
+
+void GameWindow::init_rules_combobox()
+{
+    for(const auto& rule : LifeLike::Rule::predefined_rules())
+    {
+        ui->cb_life_like_rules->addItem(QString::fromStdString(LifeLike::Rule::name_string(rule)));
+    }
+
+    ui->cb_life_like_rules->setCurrentIndex(0);
+    ui->le_rule_notation->setText(QString::fromStdString(
+                                      LifeLike::Rule::to_rle_notation(LifeLike::Rule::predefined_rules().front())));
 }
 
 void GameWindow::update_generation_counter()
@@ -156,8 +184,38 @@ void GameWindow::update_game_cells_colors()
     }
 }
 
+LifeLike::Rule GameWindow::selected_rule() const
+{
+    if(selected_rule_name() != LifeLike::Rule::CUSTOM)
+        return LifeLike::Rule(selected_rule_name());
+    else
+        return LifeLike::Rule(ui->le_rule_notation->text().toStdString());
+}
+
+LifeLike::Rule::RuleName GameWindow::selected_rule_name() const
+{
+    return LifeLike::Rule::predefined_rules().at(static_cast<size_t>(ui->cb_life_like_rules->currentIndex()));
+}
+
 void GameWindow::on_bt_single_step_clicked()
 {
+    if(ui->le_rule_notation->text().toStdString() != game_.rule().to_rle_notation())
+        game_.set_rule(selected_rule());
+
     if(game_.current_biome().has_living_cell())
         tick_game();
+}
+
+void GameWindow::selected_rule_index_changed(const QString &rule_name)
+{
+    if(rule_name != "custom")
+    {
+        ui->le_rule_notation->setEnabled(false);
+
+        const std::string selected_rule_rle_notation_string = LifeLike::Rule::to_rle_notation(selected_rule_name());
+
+        ui->le_rule_notation->setText(QString::fromStdString(selected_rule_rle_notation_string));
+    }
+    else
+        ui->le_rule_notation->setEnabled(true);
 }

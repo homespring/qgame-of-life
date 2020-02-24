@@ -26,9 +26,11 @@ private slots:
 
     void tick_game();
 
-    void conways_rules_toggled(bool checked);
+    void game_rules_toggled(bool checked);
 
     void on_bt_single_step_clicked();
+
+    void selected_rule_index_changed(const QString& rule_name);
 
 private:
     Ui::GameWindow *ui;
@@ -41,9 +43,13 @@ private:
     void init_window();
     void init_connections();
     void init_scene();
+    void init_rules_combobox();
 
     void update_generation_counter();
     void update_game_cells_colors();
+
+    LifeLike::Rule selected_rule() const;
+    LifeLike::Rule::RuleName selected_rule_name() const;
 };
 
 #endif // GAME_WINDOW_H

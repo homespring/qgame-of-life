@@ -185,6 +185,27 @@ Rule::Neighborhood Rule::neighbor_count_to_enum(size_t neighbor_cnt)
     }
 }
 
+const std::vector<Rule::RuleName> &Rule::predefined_rules()
+{
+    static const std::vector<LifeLike::Rule::RuleName> rules =
+    {
+        LifeLike::Rule::LIFE,
+        LifeLike::Rule::REPLICATOR,
+        LifeLike::Rule::SEEDS,
+        LifeLike::Rule::LIFE_WITHOUT_DEATH,
+        LifeLike::Rule::LIFE_34,
+        LifeLike::Rule::DIAMOEBA,
+        LifeLike::Rule::TWO_BY_TWO,
+        LifeLike::Rule::HIGH_LIFE,
+        LifeLike::Rule::DAY_AND_NIGHT,
+        LifeLike::Rule::MORLEY,
+        LifeLike::Rule::ANNEAL,
+        LifeLike::Rule::CUSTOM
+    };
+
+    return rules;
+}
+
 std::string Rule::flags_to_string_internal(uint16_t flags)
 {
     std::string ret;

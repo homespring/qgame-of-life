@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 namespace LifeLike
 {
@@ -67,6 +68,8 @@ namespace LifeLike
         std::string to_rle_notation() const;
 
         static Neighborhood neighbor_count_to_enum(size_t neighbor_cnt);
+
+        static const std::vector<RuleName>& predefined_rules();
 
     private:
         RuleName name_;
