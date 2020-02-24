@@ -143,12 +143,12 @@ void LifeLikeGameTest::reset_without_param_kills_all_cells()
     g.produce_next_generation();
 
     QVERIFY(g.living_cells_count() > 0);
-    QCOMPARE(g.generation_number(), 3);
+    QCOMPARE(g.generation_number(), uint64_t(3));
 
     g.reset();
 
     QVERIFY(g.living_cells_count() == 0);
-    QCOMPARE(g.generation_number(), 1);
+    QCOMPARE(g.generation_number(), uint64_t(1));
 }
 
 QTEST_APPLESS_MAIN(LifeLikeGameTest)

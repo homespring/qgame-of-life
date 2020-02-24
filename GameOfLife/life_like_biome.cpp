@@ -123,6 +123,15 @@ std::string Biome::to_string() const
     return ss.str();
 }
 
+bool Biome::has_living_cell() const
+{
+    for(size_t i = 0; i < cells_.size(); ++i)
+        if(cells_.at(i).is_alive())
+            return true;
+
+    return false;
+}
+
 void Biome::append_top_left_neighbor_color(size_t x, size_t y, std::vector<Qt::GlobalColor> &out) const
 {
     if(x == 0 || y == 0)

@@ -28,6 +28,7 @@ private slots:
     void biomes_with_different_sizes_arent_equal();
     void returns_colors_of_living_neighbors_for_a_cell();
     void can_be_converted_to_string();
+    void tells_if_has_any_living_cell();
 };
 
 LifeLikeBiomeTest::LifeLikeBiomeTest() {}
@@ -224,6 +225,17 @@ void LifeLikeBiomeTest::can_be_converted_to_string()
     expected_biome_str << "1 0 0" << std::endl;
 
     QCOMPARE(biome.to_string(), expected_biome_str.str());
+}
+
+void LifeLikeBiomeTest::tells_if_has_any_living_cell()
+{
+    Biome biome(3, 3);
+
+    QVERIFY(!biome.has_living_cell());
+
+    biome.cell_at(2, 2).be_born();
+
+    QVERIFY(biome.has_living_cell());
 }
 
 QTEST_APPLESS_MAIN(LifeLikeBiomeTest)

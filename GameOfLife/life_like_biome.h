@@ -29,6 +29,8 @@ namespace LifeLike
 
         std::string to_string() const;
 
+        bool has_living_cell() const;
+
     private:
         size_t width_ = 0;
         size_t height_ = 0;

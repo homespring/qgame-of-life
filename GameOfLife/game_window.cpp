@@ -5,6 +5,9 @@
 #include "version.h"
 #include <QLabel>
 #include <QBrush>
+#include <QDebug>
+
+const qreal CELL_SIZE = 50.0;
 
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,7 +29,47 @@ GameWindow::~GameWindow()
 
 void GameWindow::on_bt_generate_biome_clicked()
 {
+    const size_t w = static_cast<size_t>(ui->sb_grid_width->value());
+    const size_t h = static_cast<size_t>(ui->sb_grid_height->value());
+    const float fill_factor = ui->sb_fill_factor->value() / 100.0f;
 
+    if(game_.width() != w || game_.height() != h)
+    {
+        game_ = LifeLike::Game(w, h);
+        game_.initialize_randomly(fill_factor);
+
+        game_scene_.clear();
+        game_items_.clear();
+        game_items_.reserve(w * h);
+
+        for(size_t y = 0; y < h; ++y)
+        {
+            for(size_t x = 0; x < w; ++x)
+            {
+                const qreal x_pos = x * CELL_SIZE;
+                const qreal y_pos = y * CELL_SIZE;
+
+                QGraphicsRectItem* item = game_scene_.addRect(x_pos,
+                                                              y_pos,
+                                                              CELL_SIZE,
+                                                              CELL_SIZE,
+                                                              QPen(),
+                                                              QBrush(game_.current_biome().cell_at(x, y).color()));
+
+                game_items_.push_back(item);
+            }
+        }
+    }
+    else
+    {
+        // rozmiar gry sie nie zmienil
+
+        game_.initialize_randomly(fill_factor);
+        update_generation_counter();
+        update_game_cells_colors();
+    }
+
+    ui->game_view->fitInView(0, 0, game_scene_.width(), game_scene_.height());
 }
 
 void GameWindow::on_bt_sim_start_stop_clicked()
@@ -38,6 +81,9 @@ void GameWindow::on_bt_sim_start_stop_clicked()
     if(!tim_game.isActive())
     {
         // start the game
+
+        if(!game_.current_biome().has_living_cell())
+            on_bt_generate_biome_clicked();
 
         ui->bt_sim_start_stop->setText("Stop");
 
@@ -57,6 +103,13 @@ void GameWindow::tick_game()
 {
     game_.produce_next_generation();
     update_generation_counter();
+    update_game_cells_colors();
+
+    if(!game_.current_biome().has_living_cell() && tim_game.isActive())
+    {
+        // game over
+        on_bt_sim_start_stop_clicked();
+    }
 }
 
 void GameWindow::conways_rules_toggled(bool checked)
@@ -82,11 +135,29 @@ void GameWindow::init_connections()
 
 void GameWindow::init_scene()
 {
-    biome_scene_.setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
-    ui->biome_display->setScene(&biome_scene_);
+    game_scene_.setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
+    ui->game_view->setScene(&game_scene_);
 }
 
 void GameWindow::update_generation_counter()
 {
     ui->status_bar->showMessage("Generation: " + QString::number(game_.generation_number()));
+}
+
+void GameWindow::update_game_cells_colors()
+{
+    for(size_t y = 0; y < game_.height(); ++y)
+    {
+        for(size_t x = 0; x < game_.width(); ++x)
+        {
+            const size_t pos = x + y * game_.width();
+            game_items_[pos]->setBrush(QBrush(game_.current_biome().cell_at(x, y).color()));
+        }
+    }
+}
+
+void GameWindow::on_bt_single_step_clicked()
+{
+    if(game_.current_biome().has_living_cell())
+        tick_game();
 }
