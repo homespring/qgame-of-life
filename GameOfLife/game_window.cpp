@@ -81,6 +81,8 @@ void GameWindow::on_bt_sim_start_stop_clicked()
     ui->gb_grid->setEnabled(tim_game.isActive());
     ui->gb_rules->setEnabled(tim_game.isActive());
     ui->gb_colors->setEnabled(tim_game.isActive());
+    ui->bt_single_step->setEnabled(tim_game.isActive());
+    ui->bt_jump->setEnabled(tim_game.isActive());
 
     if(!tim_game.isActive())
     {
@@ -230,4 +232,26 @@ void GameWindow::selected_rule_index_changed(const QString &rule_name)
     }
     else
         ui->le_rule_notation->setEnabled(true);
+}
+
+void GameWindow::on_sb_time_step_valueChanged(int arg1)
+{
+    tim_game.setInterval(arg1);
+}
+
+void GameWindow::on_bt_jump_clicked()
+{
+    int jump_length = ui->sb_jump->value();
+
+    do
+    {
+        game_.produce_next_generation();
+
+        if(--jump_length <= 0)
+            break;
+
+    } while(game_.current_biome().has_living_cell());
+
+    update_generation_counter();
+    update_game_cells_colors();
 }

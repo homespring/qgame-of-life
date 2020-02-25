@@ -238,6 +238,39 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Jump:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="sb_jump">
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>999999</number>
+         </property>
+         <property name="singleStep">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="bt_jump">
+         <property name="text">
+          <string>Do Jump</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>

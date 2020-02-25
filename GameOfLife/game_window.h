@@ -32,6 +32,10 @@ private slots:
 
     void selected_rule_index_changed(const QString& rule_name);
 
+    void on_sb_time_step_valueChanged(int arg1);
+
+    void on_bt_jump_clicked();
+
 private:
     Ui::GameWindow *ui;
 
