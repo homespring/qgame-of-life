@@ -20,7 +20,7 @@ namespace LifeLike
 
         uint64_t living_cells_count() const;
 
-        void initialize_randomly(float fill_factor);
+        void initialize_randomly(float fill_factor, const std::vector<Qt::GlobalColor>& colors = { Qt::white });
 
         std::vector<Qt::GlobalColor> neighbors_colors(size_t x, size_t y) const;
 

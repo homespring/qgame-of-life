@@ -3,6 +3,7 @@
 
 #include "life_like_rule.h"
 #include "life_like_biome.h"
+#include "life_like_color_rule.h"
 
 namespace LifeLike
 {
@@ -18,6 +19,9 @@ namespace LifeLike
 
         const Rule& rule() const { return rule_; }
         void set_rule(const Rule& rule) { rule_ = rule; }
+
+        const ColorRule& color_rule() { return color_rule_; }
+        void set_color_rule(const ColorRule& color_rule) { color_rule_ = color_rule; }
 
         uint64_t generation_number() const { return generation_number_; }
         void produce_next_generation();
@@ -35,6 +39,7 @@ namespace LifeLike
         size_t height_ = 0;
 
         Rule rule_;
+        ColorRule color_rule_;
 
         uint64_t generation_number_ = 1;
 

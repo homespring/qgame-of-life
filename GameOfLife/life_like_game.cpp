@@ -25,16 +25,19 @@ void Game::produce_next_generation()
         {
             const auto living_neighbors_colors = current_biome().neighbors_colors(x, y);
 
-            // TODO: colors
-
-            if(current_biome().cell_at(x, y).should_be_alive(rule_,
-                                                             living_neighbors_colors.size()))
+            if(color_rule_.colors().size() > 1)
             {
-                output_biome().cell_at(x, y).be_born();
+                if(current_biome().cell_at(x, y).should_be_alive(rule_, living_neighbors_colors.size()))
+                    output_biome().cell_at(x, y).be_born(color_rule_.new_cell_color(living_neighbors_colors));
+                else
+                    output_biome().cell_at(x, y).kill();
             }
             else
             {
-                output_biome().cell_at(x, y).kill();
+                if(current_biome().cell_at(x, y).should_be_alive(rule_, living_neighbors_colors.size()))
+                    output_biome().cell_at(x, y).be_born();
+                else
+                    output_biome().cell_at(x, y).kill();
             }
         }
     }
@@ -45,7 +48,7 @@ void Game::produce_next_generation()
 void Game::initialize_randomly(float fill_factor)
 {
     generation_number_ = 1;
-    current_biome_internal().initialize_randomly(fill_factor);
+    current_biome_internal().initialize_randomly(fill_factor, color_rule_.colors());
 }
 
 uint64_t Game::living_cells_count() const

@@ -37,6 +37,7 @@ void GameWindow::on_bt_generate_biome_clicked()
     if(game_.width() != w || game_.height() != h)
     {
         game_ = LifeLike::Game(w, h, selected_rule());
+        game_.set_color_rule(selected_color_rule());
         game_.initialize_randomly(fill_factor);
 
         game_scene_.clear();
@@ -65,6 +66,7 @@ void GameWindow::on_bt_generate_biome_clicked()
     {
         // rozmiar gry sie nie zmienil
 
+        game_.set_color_rule(selected_color_rule());
         game_.initialize_randomly(fill_factor);
         game_.set_rule(selected_rule());
         update_generation_counter();
@@ -195,6 +197,16 @@ LifeLike::Rule GameWindow::selected_rule() const
 LifeLike::Rule::RuleName GameWindow::selected_rule_name() const
 {
     return LifeLike::Rule::predefined_rules().at(static_cast<size_t>(ui->cb_life_like_rules->currentIndex()));
+}
+
+LifeLike::ColorRule GameWindow::selected_color_rule() const
+{
+    if(ui->rb_color_immigration->isChecked())
+        return LifeLike::ColorRule({ Qt::blue, Qt::yellow });
+    else if(ui->rb_color_quadlife->isChecked())
+        return LifeLike::ColorRule({ Qt::red, Qt::yellow, Qt::green, Qt::blue });
+    else
+        return LifeLike::ColorRule();
 }
 
 void GameWindow::on_bt_single_step_clicked()

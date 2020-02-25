@@ -36,7 +36,7 @@ uint64_t Biome::living_cells_count() const
     return cnt;
 }
 
-void Biome::initialize_randomly(float fill_factor)
+void Biome::initialize_randomly(float fill_factor, const std::vector<Qt::GlobalColor>& colors)
 {
     if(cells_.size() == 0)
         return;
@@ -66,7 +66,15 @@ void Biome::initialize_randomly(float fill_factor)
             id = static_cast<size_t>(rand()) % cells_.size();
         } while(cells_.at(id).is_alive());
 
-        cells_[id].be_born();
+        if(colors.size() == 0)
+            cells_[id].be_born();
+        else if(colors.size() == 1)
+            cells_[id].be_born(colors.front());
+        else
+        {
+            const size_t col_id = static_cast<size_t>(rand()) % colors.size();
+            cells_[id].be_born(colors.at(col_id));
+        }
     }
 }
 

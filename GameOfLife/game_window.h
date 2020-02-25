@@ -50,6 +50,8 @@ private:
 
     LifeLike::Rule selected_rule() const;
     LifeLike::Rule::RuleName selected_rule_name() const;
+
+    LifeLike::ColorRule selected_color_rule() const;
 };
 
 #endif // GAME_WINDOW_H
