@@ -34,6 +34,8 @@ namespace LifeLike
 
         void reset();
 
+        void toggle_cell_at(size_t x, size_t y);
+
     protected:
         size_t width_ = 0;
         size_t height_ = 0;

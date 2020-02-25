@@ -13,6 +13,7 @@ SOURCES += \
         life_like_color_rule.cpp \
         life_like_game.cpp \
         life_like_rule.cpp \
+        life_like_scene.cpp \
         main.cpp \
         game_window.cpp
 
@@ -23,6 +24,7 @@ HEADERS += \
         life_like_color_rule.h \
         life_like_game.h \
         life_like_rule.h \
+        life_like_scene.h \
         version.h
 
 FORMS += \

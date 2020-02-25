@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QBrush>
 #include <QDebug>
+#include <QtMath>
 
 const qreal CELL_SIZE = 50.0;
 
@@ -17,10 +18,11 @@ GameWindow::GameWindow(QWidget *parent) :
 
     init_window();
     init_connections();
-    init_scene();
     init_rules_combobox();
+    init_empty_game();
+    ui->game_view->setScene(&game_scene_);
 
-    update_generation_counter();
+    QTimer::singleShot(100, this, [&]{ ui->game_view->fitInView(0, 0, game_scene_.width(), game_scene_.height()); });
 }
 
 GameWindow::~GameWindow()
@@ -40,27 +42,7 @@ void GameWindow::on_bt_generate_biome_clicked()
         game_.set_color_rule(selected_color_rule());
         game_.initialize_randomly(fill_factor);
 
-        game_scene_.clear();
-        game_items_.clear();
-        game_items_.reserve(w * h);
-
-        for(size_t y = 0; y < h; ++y)
-        {
-            for(size_t x = 0; x < w; ++x)
-            {
-                const qreal x_pos = x * CELL_SIZE;
-                const qreal y_pos = y * CELL_SIZE;
-
-                QGraphicsRectItem* item = game_scene_.addRect(x_pos,
-                                                              y_pos,
-                                                              CELL_SIZE,
-                                                              CELL_SIZE,
-                                                              QPen(),
-                                                              QBrush(game_.current_biome().cell_at(x, y).color()));
-
-                game_items_.push_back(item);
-            }
-        }
+        init_game_scene();
     }
     else
     {
@@ -151,12 +133,7 @@ void GameWindow::init_connections()
     connect(&tim_game, &QTimer::timeout, this, &GameWindow::tick_game);
     connect(ui->rb_rules_conway, &QAbstractButton::toggled, this, &GameWindow::game_rules_toggled);
     connect(ui->cb_life_like_rules, SIGNAL(currentIndexChanged(QString)), this, SLOT(selected_rule_index_changed(QString)));
-}
-
-void GameWindow::init_scene()
-{
-    game_scene_.setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
-    ui->game_view->setScene(&game_scene_);
+    connect(&game_scene_, SIGNAL(item_clicked(QPointF)), this, SLOT(process_item_clicked(QPointF)));
 }
 
 void GameWindow::init_rules_combobox()
@@ -169,6 +146,53 @@ void GameWindow::init_rules_combobox()
     ui->cb_life_like_rules->setCurrentIndex(0);
     ui->le_rule_notation->setText(QString::fromStdString(
                                       LifeLike::Rule::to_rle_notation(LifeLike::Rule::predefined_rules().front())));
+}
+
+void GameWindow::init_empty_game()
+{
+    const size_t w = static_cast<size_t>(ui->sb_grid_width->value());
+    const size_t h = static_cast<size_t>(ui->sb_grid_height->value());
+
+    if(game_.width() != w || game_.height() != h)
+    {
+        game_ = LifeLike::Game(w, h, selected_rule());
+        game_.set_color_rule(selected_color_rule());
+        init_game_scene();
+    }
+    else
+    {
+        game_.set_color_rule(selected_color_rule());
+        game_.reset();
+    }
+
+    ui->game_view->fitInView(0, 0, game_scene_.width(), game_scene_.height());
+    update_generation_counter();
+    update_game_cells_colors();
+}
+
+void GameWindow::init_game_scene()
+{
+    game_scene_.clear();
+    game_items_.clear();
+    game_items_.reserve(game_.width() * game_.height());
+
+    for(size_t y = 0; y < game_.height(); ++y)
+    {
+        for(size_t x = 0; x < game_.width(); ++x)
+        {
+            const qreal x_pos = x * CELL_SIZE;
+            const qreal y_pos = y * CELL_SIZE;
+
+            QGraphicsRectItem* item = game_scene_.addRect(x_pos,
+                                                          y_pos,
+                                                          CELL_SIZE,
+                                                          CELL_SIZE,
+                                                          QPen(),
+                                                          QBrush(game_.current_biome().cell_at(x, y).color()));
+
+            game_items_.push_back(item);
+        }
+    }
 }
 
 void GameWindow::update_generation_counter()
@@ -254,4 +278,19 @@ void GameWindow::on_bt_jump_clicked()
 
     update_generation_counter();
     update_game_cells_colors();
+}
+
+void GameWindow::process_item_clicked(QPointF pos)
+{
+    const size_t x_game = static_cast<size_t>(qFloor(pos.x() / CELL_SIZE));
+    const size_t y_game = static_cast<size_t>(qFloor(pos.y() / CELL_SIZE));
+    const size_t item_pos = x_game + y_game * game_.width();
+
+    game_.toggle_cell_at(x_game, y_game);
+    game_items_[item_pos]->setBrush(QBrush(game_.current_biome().cell_at(x_game, y_game).color()));
+}
+
+void GameWindow::on_bt_generate_empty_biome_clicked()
+{
+    init_empty_game();
 }

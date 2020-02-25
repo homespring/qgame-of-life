@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include <QGraphicsScene>
+#include "life_like_scene.h"
 #include "life_like_game.h"
 #include <QGraphicsRectItem>
 
@@ -36,18 +36,23 @@ private slots:
 
     void on_bt_jump_clicked();
 
+    void process_item_clicked(QPointF pos);
+
+    void on_bt_generate_empty_biome_clicked();
+
 private:
     Ui::GameWindow *ui;
 
-    QGraphicsScene game_scene_;
+    LifeLike::Scene game_scene_;
     LifeLike::Game game_;
     QTimer tim_game;
     std::vector<QGraphicsRectItem*> game_items_;
 
     void init_window();
     void init_connections();
-    void init_scene();
     void init_rules_combobox();
+    void init_empty_game();
+    void init_game_scene();
 
     void update_generation_counter();
     void update_game_cells_colors();

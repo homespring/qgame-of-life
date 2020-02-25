@@ -73,6 +73,26 @@ void Game::reset()
             current_biome_internal().cell_at(x, y).kill();
 }
 
+void Game::toggle_cell_at(size_t x, size_t y)
+{
+    if(current_biome().cell_at(x, y).is_alive())
+    {
+        current_biome_internal().cell_at(x, y).kill();
+        return;
+    }
+
+    const auto living_neighbors_colors = current_biome().neighbors_colors(x, y);
+
+    if(color_rule_.colors().size() > 1)
+    {
+        current_biome_internal().cell_at(x, y).be_born(color_rule_.new_cell_color(living_neighbors_colors));
+    }
+    else
+    {
+        current_biome_internal().cell_at(x, y).be_born();
+    }
+}
+
 void Game::reinitialize_biomes()
 {
     biome_0 = Biome(width_, height_);

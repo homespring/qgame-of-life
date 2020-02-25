@@ -20,6 +20,7 @@ namespace LifeLike
         std::vector<Qt::GlobalColor> colors_; // available colors for living cells
 
         Qt::GlobalColor find_most_frequent_color(std::map<Qt::GlobalColor, size_t> counters) const;
+        Qt::GlobalColor random_color() const;
     };
 }
 

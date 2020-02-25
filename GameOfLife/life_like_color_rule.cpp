@@ -11,6 +11,9 @@ ColorRule::ColorRule(const std::vector<Qt::GlobalColor>& colors)
 
 Qt::GlobalColor ColorRule::new_cell_color(const std::vector<Qt::GlobalColor> &neighbor_colors) const
 {
+    if(neighbor_colors.empty())
+        return random_color();
+
     std::map<Qt::GlobalColor, size_t> counters;
 
     for(auto& color : neighbor_colors)
@@ -38,7 +41,7 @@ Qt::GlobalColor ColorRule::new_cell_color(const std::vector<Qt::GlobalColor> &ne
     if(neighbors_unique_colors.size() == colors_.size())
     {
         // every color used, same frequency -> return random
-        return colors_.at(static_cast<size_t>(rand()) % colors_.size());
+        return random_color();
     }
     else
     {
@@ -67,4 +70,9 @@ Qt::GlobalColor ColorRule::find_most_frequent_color(std::map<Qt::GlobalColor, si
                 );
 
     return res->first;
+}
+
+Qt::GlobalColor ColorRule::random_color() const
+{
+    return colors_.at(static_cast<size_t>(rand()) % colors_.size());
 }
